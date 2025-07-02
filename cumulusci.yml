@@ -1,9 +1,9 @@
 minimum_cumulusci_version: "3.78.0"
 project:
-    name: Standard Unlocked
+    name: Cloud Delivery Hub
     package:
-        name: StandardUnlocked
-        name_managed: Standard Unlocked
+        name: CloudDeliveryHub
+        name_managed: Cloud Delivery Hub
         api_version: "61.0"
     # dependencies:
     #     - version_id: 04t8b000001ZxNVAA0 # FlowActionsBasePack Version: 3.18

@@ -1,0 +1,49 @@
+<template>
+    <div class="slds-chat-container">
+        <ul class="slds-chat-list" data-id="chatList"> 
+            <template for:each={comments.data} for:item="msg">
+                <li key={msg.Id} class={msg.wrapperClass}>
+                    <div class="slds-chat-message">
+                        <div class="slds-chat-message__body">
+                            <div class={msg.bubbleClass}>
+                                <lightning-formatted-text value={msg.body}></lightning-formatted-text>
+                            </div>
+                            <div class={msg.metaClass}>
+                                {msg.author} &bull; 
+                                <lightning-formatted-date-time 
+                                    value={msg.createdDate} 
+                                    hour="2-digit" 
+                                    minute="2-digit"
+                                    class="slds-m-left_xx-small">
+                                </lightning-formatted-date-time>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </template>
+        </ul>
+        
+        <div class="slds-p-top_x-small slds-grid slds-grid_vertical-align-end">
+            <div class="slds-col slds-grow">
+                <lightning-textarea 
+                    variant="label-hidden" 
+                    placeholder="Type a message..." 
+                    value={commentBody}
+                    onchange={handleInputChange}
+                    onkeydown={handleKeyDown}
+                    disabled={isSending}
+                    class="chat-input">
+                </lightning-textarea>
+            </div>
+            <div class="slds-col slds-no-flex slds-p-left_x-small">
+                <lightning-button-icon 
+                    icon-name="utility:send" 
+                    variant="brand" 
+                    onclick={handleSend}
+                    disabled={isSending}
+                    alternative-text="Send">
+                </lightning-button-icon>
+            </div>
+        </div>
+    </div>
+</template>

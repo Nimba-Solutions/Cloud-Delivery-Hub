@@ -1,0 +1,75 @@
+/* --- 1. SCROLLING CONTAINER --- */
+.slds-chat-list {
+    height: 400px;
+    overflow-y: auto;
+    background-color: #f3f3f3;
+    padding: 0.5rem; /* Reduced from 1rem */
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+}
+
+/* Remove default list styles and tighten gap between messages */
+.slds-chat-list li {
+    list-style: none;
+    margin-bottom: 0.25rem; /* Drastically reduced from standard spacing */
+}
+
+/* --- 2. BUBBLE BASE STYLES --- */
+.slds-chat-message__text {
+    padding: 0.4rem 0.75rem; /* Slimmer padding inside bubbles */
+    border-radius: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    max-width: 85%;
+    position: relative;
+    word-wrap: break-word;
+}
+
+/* --- 3. OUTBOUND (MY MESSAGES - RIGHT) --- */
+.slds-chat-message__text_outbound {
+    background-color: #005fb2;
+    color: #ffffff;
+    border-bottom-right-radius: 0;
+    margin-left: auto;
+}
+
+/* Force text inside blue bubbles to be white */
+.slds-chat-message__text_outbound lightning-formatted-text {
+    color: #ffffff !important;
+    --slds-c-text-color: #ffffff;
+}
+
+/* --- 4. INBOUND (THEIR MESSAGES - LEFT) --- */
+.slds-chat-message__text_inbound {
+    background-color: #ffffff;
+    color: #181818;
+    border-bottom-left-radius: 0;
+    margin-right: auto;
+    border: 1px solid #e5e5e5;
+}
+
+/* --- 5. META DATA (Author & Time) --- */
+.slds-chat-message__meta {
+    font-size: 0.65rem; /* Smaller, less intrusive font */
+    color: #706e6b;
+    margin-top: 0.1rem; /* Pulls meta closer to bubble */
+    margin-bottom: 0;
+}
+
+.slds-text-align_right {
+    text-align: right;
+    margin-right: 4px;
+}
+
+.slds-chat-message__meta:not(.slds-text-align_right) {
+    margin-left: 4px;
+}
+
+/* --- 6. INPUT AREA --- */
+.chat-input {
+    --slds-c-textarea-text-color: #000000;
+}

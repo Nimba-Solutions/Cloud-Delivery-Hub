@@ -1,14 +1,14 @@
 minimum_cumulusci_version: "3.78.0"
 project:
-    name: Cloud Delivery Hub
+    name: Delivery Hub
     package:
-        name: CloudDeliveryHub
-        name_managed: Cloud Delivery Hub
+        name: DeliveryHub
+        name_managed: Delivery Hub
+        namespace: delivery
         api_version: "61.0"
     # dependencies:
-    #     - version_id: 04t8b000001ZxNVAA0 # FlowActionsBasePack Version: 3.18
-    #     - version_id: 04t5G000004fz7mQAA # FlowScreenComponentsBasePack Version: 3.3.4
-    #     - version_id: 04t5G0000043xu3QAA # https://unofficialsf.com/from-josh-dayment-improved-file-upload-in-flow-screens/
+    #    - github: https://github.com/Nimba-Solutions/Work-Item-Composer
+    #      unmanaged: true
     git:
         default_branch: "main"
         prefix_feature: "feature/"
@@ -16,6 +16,15 @@ project:
         prefix_release: "release/"
     source_format: sfdx
 
+orgs:
+    # This is provided for convenience.
+    # The majority of development should be done in a NON-namespaced scratch org.
+    # Use this sparingly - if at all.
+    scratch:
+        dev_namespaced:
+            config_file: orgs/dev.json
+            days: 30
+            namespaced: "true"
 tasks:
     robot:
         options:
@@ -28,8 +37,12 @@ tasks:
             path: robot/Standard-Unlocked/tests
             output: robot/Standard-Unlocked/doc/Standard-Unlocked_tests.html
 
+    # Use run_test_suite instead of the standard 'run_tests' task to prevent running 3rd party tests,
+    # even if they share the default namespace with us (*cough* NebulaLogger *cough*)
     run_tests:
+        class_path: cumulusci.tasks.apex.testrunner.RunApexTests
         options:
+            test_suite_names: DH # only running the apex tests included in this test suite
             required_org_code_coverage_percent: 75
 
     # CumulusCI ships with both `retrieve_changes`, `permsets` and `deploy` tasks out of the box, '
@@ -42,30 +55,34 @@ tasks:
     retrieve_changes:
         class_path: tasks.retrieve_changes.RetrieveChanges
         options:
-            preserve_tokens: "__PROJECT_NAME__,__PROJECT_LABEL__"
+            preserve_tokens: "%%%CURRENT_USER%%%"
     deploy:
-        class_path: tasks.deploy.Deploy
         options:
             transforms:
                 - transform: find_replace
                   options:
                       patterns:
-                          - find: "__PROJECT_NAME__"
-                            replace: $project_config.project__package__name
-                          - find: "__PROJECT_LABEL__"
-                            replace: $project_config.project__package__name_managed
+                          - find: "%%%CURRENT_USER%%%"
+                            inject_username: True
+    deploy_post:
+        options:
+            transforms:
+                - transform: find_replace
+                  options:
+                      patterns:
+                          - find: "%%%CURRENT_USER%%%"
+                            inject_username: True
 
     assign_permission_set_groups:
-        class_path: tasks.permsets.AssignPermissionSetsWithFindReplace
+        description: Assign Delivery Hub Admin permission set group to the current user
+        class_path: cumulusci.tasks.salesforce.users.permsets.AssignPermissionSetGroups
         options:
-            api_names: __PROJECT_NAME__Admin
-            transforms:
-                - transform: find_replace
-                  options:
-                      patterns:
-                          - find: "__PROJECT_NAME__"
-                            replace: $project_config.project__package__name
+            api_names: DeliveryHubAdmin
 
+    create_package_version:
+        options:
+            namespace: delivery
+    #        skip_validation: False
 flows:
     config_dev:
         steps:
@@ -76,3 +93,21 @@ flows:
         steps:
             3.0:
                 task: assign_permission_set_groups
+
+plans:
+    install:
+        tier: primary
+        title: Install
+        slug: install
+        is_listed: True
+        preflight_message: "This will install and configure Delivery Hub in your org."
+        allowed_org_providers:
+            - devhub
+            - user
+        steps:
+            1:
+                flow: install_prod
+            2:
+                task: assign_permission_set_groups
+                ui_options:
+                    name: Assign the "DeliveryHubAdmin" Permission Set Group to the current user.

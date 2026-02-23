@@ -1,5 +1,7 @@
 # Standard-Unlocked
 
+Notes for draganddroplwc https://www.salesforcetroop.com/kanban-board-lwc-project
+
 This repository contains everything you need to realize enterprise-grade Salesforce CICD practices without making an enterprise-grade investment. 
 
 The included [Github Actions](.github/workflows) provide a standardized (and mostly automated!) framework for building, testing, and delivering solutions in a consistent and repeatable manner. 
@@ -59,3 +61,4 @@ Follow the provided [`Release` instructions](https://github.com/Nimba-Solutions/
 3. Run `cci flow run release_unlocked_production --org dev --debug` to release a new beta version of this package.
 4. Run `cci org browser dev` to open the org in your browser.
 5. [OPTIONAL] Run `cci flow run install_prod --org <target-org-alias>` to install the package and _all of its dependencies_ in `<target-org-alias>`.
+ 
